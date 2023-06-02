@@ -1,2 +1,3 @@
 # docker-dind-molecule
-Docker Image for testing Ansible deployment using Docker with Molecule
+
+Run Molecule inside a docker container and launch new docker images inside that container.

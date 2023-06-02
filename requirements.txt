@@ -1,0 +1,7 @@
+ansible-compat<4
+ansible
+molecule-plugins[docker]
+yamllint==1.31.0
+ansible-lint==6.15.0
+urllib3<2
+pytest-testinfra
