@@ -8,6 +8,6 @@ RUN python3 -m virtualenv /opt/venv
 
 RUN . /opt/venv/bin/activate && python -m pip install --upgrade pip
 
-COPY dockerfiles/requirements.txt /opt
+COPY requirements.txt /opt
 
 RUN . /opt/venv/bin/activate && pip3 install -r /opt/requirements.txt
