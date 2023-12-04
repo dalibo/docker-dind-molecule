@@ -8,4 +8,4 @@ RUN python3 -m venv --upgrade-deps /opt/venv
 
 COPY requirements.txt /opt
 
-RUN . /opt/venv/bin/activate && pip3 install -r /opt/requirements.txt
+RUN /opt/venv/bin/pip install -r /opt/requirements.txt
