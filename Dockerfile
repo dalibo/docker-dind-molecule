@@ -1,4 +1,4 @@
-FROM docker:dind
+FROM docker:24.0.6-dind
 
 RUN apk add --no-cache python3 python3-dev py3-pip gcc \
 	git curl build-base autoconf automake py3-cryptography rsync \
