@@ -2,6 +2,7 @@ ansible==8.6.1
 ansible-compat==4.1.10
 ansible-core==2.15.6
 ansible-lint==6.22.0
+distlib==0.3.8
 molecule==6.0.2
 molecule-plugins[docker]==23.5.0
 pytest-testinfra==10.0.0
