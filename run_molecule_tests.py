@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 import subprocess
@@ -6,10 +7,40 @@ from pathlib import Path
 from typing import Set
 
 
+def _test_changed_roles(args: argparse.Namespace) -> None:
+    p = args.parent or ["molecule", "roles"]
+    parents = [Path(i) for i in p]
+    logging.info("inspect for change based on directories: %s", ", ".join(p))
+    if any([not pa.exists() or not pa.is_dir() for pa in parents]):
+        raise ValueError("At least one parent does not exist or is invalid")
+    origin = os.environ.get("COMPARED_BRANCH", "main")
+    current = os.environ.get("CI_COMMIT_SHA", "HEAD")
+    run_molecule_tests(
+        get_subdirs(
+            parents=parents,
+            potential_children=get_diff(origin, current),
+        )
+    )
+
+
+def parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(__file__)
+    subp = p.add_subparsers()
+    testp = subp.add_parser("test")
+    testp.add_argument(
+        "-p",
+        "--parent",
+        action="append",
+        help="Parent directory on which we should check for changes",
+    )
+    testp.set_defaults(func=_test_changed_roles)
+    return p
+
+
 def run_command(
     cmd: Sequence[str], *, stdout: int | None = subprocess.PIPE, cwd: Path | None = None
 ) -> subprocess.CompletedProcess[str]:
-    logging.info("running command: %s", cmd)
+    logging.info("running command: %s", " ".join(cmd))
     return subprocess.run(cmd, stdout=stdout, check=True, text=True, cwd=cwd)
 
 
@@ -58,20 +89,13 @@ def run_molecule_tests(roles: Set[str]) -> None:
 
 def main() -> None:
     logging.basicConfig(level="INFO", format="%(levelname)s - %(message)s")
-    origin = os.environ.get("COMPARED_BRANCH", "main")
-    current = os.environ.get("CI_COMMIT_SHA", "HEAD")
-    # list of directories in which we should watch for changes to define
-    # the list of testable roles. Currently this is hardcoded, but the
-    # idea is to give more control to user and add flags
-    # (probably --parent-dir) for those who don't use standard roles and
-    # molecule location.
-    parents = [Path("roles/"), Path("molecule/")]
-    run_molecule_tests(
-        get_subdirs(
-            parents,
-            potential_children=get_diff(origin, current),
-        )
-    )
+    p = parser()
+    args = p.parse_args()
+    if hasattr(args, "func"):
+        if not args.func(args):
+            p.exit(1)
+    else:
+        p.print_help()
 
 
 if __name__ == "__main__":
