@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import shlex
 import subprocess
 from collections.abc import Sequence
 from pathlib import Path
@@ -40,7 +41,7 @@ def parser() -> argparse.ArgumentParser:
 def run_command(
     cmd: Sequence[str], *, stdout: int | None = subprocess.PIPE, cwd: Path | None = None
 ) -> subprocess.CompletedProcess[str]:
-    logging.info("running command: %s", " ".join(cmd))
+    logging.info("running command: %s", shlex.join(cmd))
     return subprocess.run(cmd, stdout=stdout, check=True, text=True, cwd=cwd)
 
 
