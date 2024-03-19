@@ -7,6 +7,6 @@ RUN apk add --no-cache python3 python3-dev py3-pip gcc \
 RUN python3 -m venv --upgrade-deps /opt/venv
 
 COPY requirements.txt /opt
-COPY run_molecule_tests.py /opt/
+COPY ansible_collection_helper.py /opt/
 
 RUN /opt/venv/bin/pip install -r /opt/requirements.txt
