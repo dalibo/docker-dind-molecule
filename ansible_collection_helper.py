@@ -93,8 +93,7 @@ def main() -> None:
     p = parser()
     args = p.parse_args()
     if hasattr(args, "func"):
-        if not args.func(args):
-            p.exit(1)
+        args.func(args)
     else:
         p.print_help()
 
