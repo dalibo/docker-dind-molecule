@@ -39,10 +39,15 @@ def parser() -> argparse.ArgumentParser:
 
 
 def run_command(
-    cmd: Sequence[str], *, stdout: int | None = subprocess.PIPE, cwd: Path | None = None
+    cmd: Sequence[str], *, cwd: Path | None = None
 ) -> subprocess.CompletedProcess[str]:
     logging.info("running command: %s", shlex.join(cmd))
-    return subprocess.run(cmd, stdout=stdout, check=True, text=True, cwd=cwd)
+    try:
+        return subprocess.run(cmd, capture_output=True, check=True, text=True, cwd=cwd)
+    except subprocess.CalledProcessError as e:
+        logging.error(e.stdout)
+        logging.error(e.stderr)
+        raise e
 
 
 def get_diff(origin: str, current: str) -> Sequence[Path]:
