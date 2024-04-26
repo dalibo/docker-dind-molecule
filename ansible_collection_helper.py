@@ -7,6 +7,55 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Set
 
+import yaml
+from ansible.cli.doc import DocCLI
+from jinja2 import Environment, FileSystemLoader
+
+env = Environment(loader=FileSystemLoader((Path(__file__).parent / "templates")))
+template = env.get_template("readme.jinja2")
+
+
+def generate_role_documentation(
+    role_name: str, role_spec_file: Path, molecule_dir: Path, doc_dir: Path
+) -> None:
+    """Reads roles metadata and molecule converge playbooks to generate README
+    files for a specific role.
+    """
+    playbook = molecule_dir / role_name / "converge.yml"
+    doc = doc_dir / f"role_{role_name}_doc.md"
+    with (
+        role_spec_file.open() as f_spec,
+        playbook.open() as f_play,
+        doc.open("w") as f_doc,
+    ):
+        logging.info("generate README for %s", role_name)
+        spec = yaml.safe_load(f_spec)["argument_specs"]["main"]
+        options: Sequence[str] = []
+        DocCLI.add_fields(options, spec["options"], limit=120, opt_indent="  ")
+        f_doc.write(
+            template.render(
+                role_name=role_name,
+                spec=spec,
+                options=options,
+                example=f_play.read().strip(),
+            )
+        )
+
+
+def generate_documentation(
+    *, roles_dir: Path, molecule_dir: Path, doc_dir: Path
+) -> None:
+    """Generates documention (README) for all roles stored on the specified directory.
+    
+    To generate them, we parse the argument_specs.yml and the converge.yml
+    playbook we use for our molecule tests (on the role named scenario directory).
+    """
+    logging.info("start generating READMEs")
+    for r_spec in roles_dir.glob("*/meta/argument_specs.yml"):
+        generate_role_documentation(
+            r_spec.parent.parent.parts[-1], r_spec, molecule_dir, doc_dir
+        )
+
 
 def _test_changed_roles(*, parents: Sequence[Path] | None) -> None:
     parents = parents if parents else [Path("molecule"), Path("roles")]
@@ -39,6 +88,32 @@ def parser() -> argparse.ArgumentParser:
         help="Parent directory on which we should check for changes",
     )
     testp.set_defaults(func=_test_changed_roles)
+    docp = subp.add_parser("document")
+    docp.add_argument(
+        "-r",
+        "--roles-dir",
+        action="store",
+        required=True,
+        type=Path,
+        help="Directory on which roles are stored",
+    )
+    docp.add_argument(
+        "-m",
+        "--molecule-dir",
+        action="store",
+        required=True,
+        type=Path,
+        help="Directory on which molecule scenario are stored",
+    )
+    docp.add_argument(
+        "-d",
+        "--doc-dir",
+        action="store",
+        default="docs",
+        type=Path,
+        help="Directory on which we should write documentation pages",
+    )
+    docp.set_defaults(func=generate_documentation)
     return p
 
 
