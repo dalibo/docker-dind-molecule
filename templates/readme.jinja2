@@ -1,0 +1,23 @@
+# {{ role_name }} - {{ spec['short_description'] }}
+
+{{ spec['description'] }}
+
+{% if options | length > 0 %}
+## Variables
+
+List of variables for the {{ role_name }} role:
+
+{% for opt in options -%}
+{{- opt }}
+{% endfor -%}
+{% endif -%}
+
+## Example
+
+``` yaml
+{{ example }}
+```
+
+## Author
+
+{{ spec['author'] }}

@@ -8,5 +8,6 @@ RUN python3 -m venv --upgrade-deps /opt/venv
 
 COPY requirements.txt /opt
 COPY ansible_collection_helper.py /opt/
+COPY templates /opt/templates/
 
 RUN /opt/venv/bin/pip install -r /opt/requirements.txt
