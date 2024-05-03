@@ -46,7 +46,7 @@ def generate_documentation(
     *, roles_dir: Path, molecule_dir: Path, doc_dir: Path
 ) -> None:
     """Generates documention (README) for all roles stored on the specified directory.
-    
+
     To generate them, we parse the argument_specs.yml and the converge.yml
     playbook we use for our molecule tests (on the role named scenario directory).
     """
@@ -131,7 +131,8 @@ def run_command(
 
 def get_diff(origin: str, current: str) -> Sequence[Path]:
     """Return paths of changed files between two git branch / hash, that list
-    is simply based on git diff result"""
+    is simply based on git diff result
+    """
     return [
         Path(f)
         for f in (
