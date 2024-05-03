@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2024 Dalibo
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+[build-system]
+requires = ["setuptools >= 61.0", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ansible_collection_helper"
+description = "Helper to manage Ansible collection"
+readme = "README.md"
+requires-python = ">=3.11, <4"
+license = { text = "GPLv3" }
+authors = [{ name = "Dalibo SCOP", email = "contact@dalibo.com" }]
+keywords = [
+    "ansible",
+    "command-line",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Topic :: System :: Systems Administration",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dynamic = ["version", "dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[project.urls]
+Source = "https://github.com/dalibo/docker-dind-molecule/"
+Tracker = "https://github.com/dalibo/docker-dind-molecule/"
+
+
+[project.scripts]
+ansible_collection_helper = "ansible_collection_helper:helper.main"
+
+[tool.setuptools_scm]
