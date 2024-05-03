@@ -8,10 +8,12 @@ from pathlib import Path
 from typing import Set
 
 
-def _test_changed_roles(args: argparse.Namespace) -> None:
-    p = args.parent or ["molecule", "roles"]
-    parents = [Path(i) for i in p]
-    logging.info("inspect for change based on directories: %s", ", ".join(p))
+def _test_changed_roles(*, parents: Sequence[Path] | None) -> None:
+    parents = parents if parents else [Path("molecule"), Path("roles")]
+    logging.info(
+        "inspect for change based on directories: %s",
+        ", ".join([str(p) for p in parents]),
+    )
     if any([not pa.exists() or not pa.is_dir() for pa in parents]):
         raise ValueError("At least one parent does not exist or is invalid")
     origin = os.environ.get("COMPARED_BRANCH", "main")
@@ -31,6 +33,8 @@ def parser() -> argparse.ArgumentParser:
     testp.add_argument(
         "-p",
         "--parent",
+        dest="parents",
+        type=Path,
         action="append",
         help="Parent directory on which we should check for changes",
     )
@@ -96,9 +100,9 @@ def run_molecule_tests(roles: Set[str]) -> None:
 def main() -> None:
     logging.basicConfig(level="INFO", format="%(levelname)s - %(message)s")
     p = parser()
-    args = p.parse_args()
-    if hasattr(args, "func"):
-        args.func(args)
+    args = vars(p.parse_args())
+    if func := args.pop("func", None):
+        func(**args)
     else:
         p.print_help()
 
