@@ -9,9 +9,15 @@ from typing import Set
 
 import yaml
 from ansible.cli.doc import DocCLI
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 
-env = Environment(loader=FileSystemLoader((Path(__file__).parent / "templates")))
+from . import __name__ as pkgname
+
+env = Environment(
+    loader=PackageLoader(package_name=pkgname, package_path="templates"),
+    trim_blocks=True,
+    lstrip_blocks=True,
+)
 template = env.get_template("readme.jinja2")
 
 
