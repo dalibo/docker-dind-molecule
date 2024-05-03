@@ -6,8 +6,6 @@ RUN apk add --no-cache python3 python3-dev py3-pip gcc jq \
 
 RUN python3 -m venv --upgrade-deps /opt/venv
 
-COPY requirements.txt /opt
-COPY ansible_collection_helper.py /opt/
-COPY templates /opt/templates/
-
-RUN /opt/venv/bin/pip install -r /opt/requirements.txt
+COPY . /usr/local/src/ansible_collection_helper
+RUN /opt/venv/bin/pip install --no-cache-dir /usr/local/src/ansible_collection_helper &&\
+	rm -rf /usr/local/src/ansible_collection_helper
