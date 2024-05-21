@@ -8,3 +8,4 @@ molecule==6.0.2
 molecule-plugins[docker]==23.5.0
 pytest-testinfra==10.0.0
 urllib3<2
+yq==3.4.3
