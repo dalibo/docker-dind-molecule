@@ -9,9 +9,15 @@ from typing import Set
 
 import yaml
 from ansible.cli.doc import DocCLI
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 
-env = Environment(loader=FileSystemLoader((Path(__file__).parent / "templates")))
+from . import __name__ as pkgname
+
+env = Environment(
+    loader=PackageLoader(package_name=pkgname, package_path="templates"),
+    trim_blocks=True,
+    lstrip_blocks=True,
+)
 template = env.get_template("readme.jinja2")
 
 
@@ -31,7 +37,7 @@ def generate_role_documentation(
         logging.info("generate README for %s", role_name)
         spec = yaml.safe_load(f_spec)["argument_specs"]["main"]
         options: Sequence[str] = []
-        DocCLI.add_fields(options, spec["options"], limit=120, opt_indent="  ")
+        DocCLI.add_fields(options, spec["options"], limit=1000, opt_indent="  ")
         f_doc.write(
             template.render(
                 role_name=role_name,
