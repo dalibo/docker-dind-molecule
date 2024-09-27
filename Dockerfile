@@ -2,7 +2,7 @@ FROM docker:24.0.8-dind
 
 RUN apk add --no-cache python3 python3-dev py3-pip gcc jq \
 	git curl build-base autoconf automake py3-cryptography rsync \
-	linux-headers musl-dev libffi-dev openssl-dev openssh
+	linux-headers musl-dev libffi-dev openssl-dev openssh-client
 
 RUN python3 -m venv --upgrade-deps /opt/venv
 
