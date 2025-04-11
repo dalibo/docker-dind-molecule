@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 name = "ansible_collection_helper"
 description = "Helper to manage Ansible collection"
 readme = "README.md"
-requires-python = ">=3.11, <4"
+requires-python = ">=3.12, <4"
 license = { text = "GPLv3" }
 authors = [{ name = "Dalibo SCOP", email = "contact@dalibo.com" }]
 keywords = [
@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: System :: Systems Administration",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3 :: Only",
 ]
 dynamic = ["version", "dependencies"]
