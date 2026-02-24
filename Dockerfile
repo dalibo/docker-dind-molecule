@@ -10,5 +10,6 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /build/wheels /usr/local/src/
 FROM docker:28.1.1-dind
 RUN apk add --no-cache python3 py3-pip jq py3-cryptography rsync openssh-client git
 COPY --from=builder /build/wheels /wheels
-RUN python3 -m venv /opt/venv/
-RUN /opt/venv/bin/pip install --no-cache-dir /wheels/*
+COPY --from=ghcr.io/astral-sh/uv:0.10.5 /uv /uvx /bin/
+RUN uv venv /opt/venv --python 3.12 && \
+    uv pip install --no-cache --python /opt/venv /wheels/*
