@@ -1,8 +1,8 @@
-ansible-lint>=25.2.1
-ansible>=9,<10
+ansible-lint>=26.1.1
+ansible>=13,<14
 codespell==2.4.1
-distlib==0.3.8
-molecule-plugins[docker]==23.7.0
-molecule==25.4.0
+distlib==0.4.0
+molecule-plugins[docker]==25.8.12
+molecule==25.12.0
 urllib3<2
-yq>=3.4.0
+yq>=3.4.3
