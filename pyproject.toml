@@ -32,6 +32,11 @@ dynamic = ["version", "dependencies"]
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
+[project.optional-dependencies]
+legacy = [
+    "ansible-core < 2.17"
+]
+
 [project.urls]
 Source = "https://github.com/dalibo/docker-dind-molecule/"
 Tracker = "https://github.com/dalibo/docker-dind-molecule/"
