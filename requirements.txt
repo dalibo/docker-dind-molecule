@@ -1,5 +1,5 @@
 ansible-lint>=26.1.1
-ansible>=13,<14
+ansible<14
 codespell==2.4.1
 distlib==0.4.0
 molecule-plugins[docker]==25.8.12
