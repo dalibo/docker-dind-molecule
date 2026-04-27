@@ -63,7 +63,9 @@ def generate_documentation(
         )
 
 
-def _test_changed_roles(*, parents: Sequence[Path] | None) -> None:
+def _test_changed_roles(
+    *, molecule_base_config: Path, parents: Sequence[Path] | None
+) -> None:
     parents = parents if parents else [Path("molecule"), Path("roles")]
     logging.info(
         "inspect for change based on directories: %s",
@@ -74,10 +76,11 @@ def _test_changed_roles(*, parents: Sequence[Path] | None) -> None:
     origin = os.environ.get("COMPARED_BRANCH", "main")
     current = os.environ.get("CI_COMMIT_SHA", "HEAD")
     run_molecule_tests(
+        molecule_base_config,
         get_subdirs(
             parents=parents,
             potential_children=get_diff(origin, current),
-        )
+        ),
     )
 
 
@@ -94,6 +97,14 @@ def parser() -> argparse.ArgumentParser:
         help="Parent directory on which we should check for changes",
     )
     testp.set_defaults(func=_test_changed_roles)
+    testp.add_argument(
+        "--molecule-base-config",
+        "-m",
+        action="store",
+        default=".config/molecule/config.yml",
+        help="Molecule base configuration file",
+        type=Path,
+    )
     docp = subp.add_parser("document")
     docp.add_argument(
         "-r",
@@ -172,11 +183,20 @@ def get_subdirs(
     return subdir
 
 
-def run_molecule_tests(roles: Set[str]) -> None:
+def run_molecule_tests(molecule_base_config: Path, roles: Set[str]) -> None:
     """Execute molecule tests for a specific set of roles"""
     for role in roles:
         logging.info("execute scenario / tests for roles %s", role)
-        run_command(["molecule", "test", "--scenario-name", role])
+        run_command(
+            [
+                "molecule",
+                "--base-config",
+                str(molecule_base_config),
+                "test",
+                "--scenario-name",
+                role,
+            ]
+        )
 
 
 def main() -> None:
